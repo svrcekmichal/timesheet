@@ -1,8 +1,11 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import schema from './schema'
+import schema from './schema';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
+
 const port = process.env.PORT || 3001;
 
 app.use('/graphql', graphqlHTTP(req => ({

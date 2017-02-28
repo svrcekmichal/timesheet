@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "backpack-core": "^0.2.0",
+    "cors": "^2.8.1",
     "express": "^4.14.1",
     "express-graphql": "^0.6.3",
     "graphql": "^0.9.1",
