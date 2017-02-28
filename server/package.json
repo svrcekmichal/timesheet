@@ -15,5 +15,8 @@
     "express-graphql": "^0.6.3",
     "graphql": "^0.9.1",
     "graphql-relay": "^0.5.1"
+  },
+  "devDependencies": {
+    "babel-preset-flow": "^6.23.0"
   }
 }

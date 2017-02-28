@@ -1,3 +1,5 @@
+// @flow
+
 import {
   GraphQLObjectType,
   GraphQLSchema,
@@ -12,6 +14,9 @@ import {
   fromGlobalId,
   globalIdField,
 } from 'graphql-relay'
+
+import { getUsers, getUserById, getUserTimeSheetWeek } from './mockData'
+import type { TimeSheetDayResponse, UserTimeSheetWeekResponse } from './mockData';
 
 const {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
@@ -41,13 +46,14 @@ const TimeSheetDayType = new GraphQLObjectType({
   fields: () => ({
     id: globalIdField(),
     dayNumber: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (day: TimeSheetDayResponse) => day.day_number
     },
     hours: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLInt),
     },
     minutes: {
-      type: new GraphQLNonNull(GraphQLInt)
+      type: new GraphQLNonNull(GraphQLInt),
     },
   })
 });
@@ -55,15 +61,26 @@ const TimeSheetDayType = new GraphQLObjectType({
 const TimeSheetWeekType = new GraphQLObjectType({
   name: 'TimeSheetWeek',
   fields: () => ({
-    id: globalIdField(),
+    year: {
+      type: new GraphQLNonNull(GraphQLInt),
+    },
+    weekNumber: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (week: UserTimeSheetWeekResponse) => week.week_number
+    },
     days: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimeSheetDayType))),
+      resolve: (week: UserTimeSheetWeekResponse) => week.days_in_week
     },
     approvedBy: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType)))
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
+      resolve: (week: UserTimeSheetWeekResponse) => {
+        return Promise.all(week.approvers.map(id => getUserById(id)));
+      }
     },
     notes: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimeSheetNoteType)))
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimeSheetNoteType))),
+      resolve: () => []
     }
   })
 })
@@ -81,7 +98,7 @@ const UserType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
     },
     weekTimeSheet: {
-      type: new GraphQLNonNull(TimeSheetWeekType),
+      type: TimeSheetWeekType,
       args: {
         year: {
           type: new GraphQLNonNull(GraphQLInt)
@@ -90,6 +107,7 @@ const UserType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLInt)
         }
       },
+      resolve: ({id}, {year, week}) => getUserTimeSheetWeek(id, year, week)
     }
   })
 });
@@ -98,13 +116,8 @@ const queryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     users: {
-      type: UserType,
-      args: {
-
-      },
-      resolve: (root, args, context, info) => {
-        return []
-      }
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(UserType))),
+      resolve: () => getUsers()
     },
     node: nodeField
   })
