@@ -1,27 +1,56 @@
 // @flow
 
+/**
+ * All the mocking stuff, really ugly code :D
+ */
+
+import Faker from 'faker';
+import moment from 'moment';
+
+moment.updateLocale('en',{ //only working setup
+  week : {
+    dow : 0, // Sunday is the first day of the week.
+    doy : 4  // The week that contains Jan 4th is the first week of the year.
+  }
+})
+
 type User = {
+  __type: string,
   id: number,
   name: string,
   email: string
 }
 
+let userId = 1;
 const users: User[] = [
   {
-    id: 1,
+    __type:'User',
+    id: userId++,
     name: 'Michal Svrček',
     email: 'svrcekmichal@gmail.com'
   },
   {
-    id: 2,
+    __type:'User',
+    id: userId++,
     name: 'Peter Kowalczyk',
     email: 'peter@aurity.co'
   },
   {
-    id: 3,
+    __type:'User',
+    id: userId++,
     name: 'Danuta Kowalczyk',
     email: 'danuta@aurity.co'
-  }
+  },
+  ...(new Array(17).fill().map(() => { //generate some fake data
+    const email = Faker.internet.email();
+    const name = email.split('@')[0];
+    return {
+      __type:'User',
+      id: userId++,
+      name,
+      email
+    }
+  }))
 ];
 
 export const getUserById = (id: number) => new Promise((resolve,reject) => {
@@ -32,13 +61,18 @@ export const getUserById = (id: number) => new Promise((resolve,reject) => {
 export const getUsers = () => Promise.resolve(users);
 
 export type TimeSheetDayResponse = {
-  id: number,
+  __type: string,
+  id: string,
+  year_number: number,
+  month_number: number,
   day_number: number,
   minutes: number,
-  hours: number
+  hours: number,
 }
 
 export type UserTimeSheetWeekResponse = {
+  __type: string,
+  id: string,
   year: number,
   week_number: number,
   status: ?number,
@@ -49,23 +83,50 @@ export type UserTimeSheetWeekResponse = {
   approved_by_data: ?number
 }
 
-export const getUserTimeSheetWeek = (userId: number, year: number, weekNumber: number):Promise<UserTimeSheetWeekResponse> => Promise.resolve({
-  year: year,
-  week_number: weekNumber,
-  status: null,
-  owner_id: userId,
-  days_in_week: [
-    {id: 1, hours: 0, minutes: 0, day_number: 26 },
-    {id: 2, hours: 1, minutes: 30, day_number: 27 },
-    {id: 3, hours: 0, minutes: 0, day_number: 28 },
-    {id: 4, hours: 3, minutes: 30, day_number: 29 },
-    {id: 5, hours: 0, minutes: 0, day_number: 30 },
-    {id: 6, hours: 4, minutes: 30, day_number: 31 },
-    {id: 7, hours: 5, minutes: 0, day_number: 1 },
-  ],
-  approvers: [2, 3],
-  approved_by_id: null,
-  approved_by_data: null,
 
+const generateWeekDays = (year, week) => {
+  const day = moment().year(year).week(week);
+  console.log(day.day())
+  const days = [];
+  for(let i = 0; i < 7; i++ ) {
+    day.add(1, 'd');
+    days.push({
+      yearNum: day.get('year'),
+      monthNum: day.get('month'),
+      dayNum: day.get('date')
+    })
+  }
+  return days;
+}
 
-})
+const memoizedTimeSheet = Object.create(null);
+
+export const getUserTimeSheetWeek = (userId: number, year: number, weekNumber: number):Promise<UserTimeSheetWeekResponse> => {
+  const id = `${userId}_${year}_${weekNumber}`;
+  const cache = memoizedTimeSheet[id];
+  if(typeof cache !== 'undefined') {
+    return cache;
+  }
+  const result = {
+    __type: 'TimeSheetWeek',
+    id,
+    year: year,
+    week_number: weekNumber,
+    status: null,
+    owner_id: userId,
+    days_in_week: generateWeekDays(year, weekNumber).map((day, i) => ({
+      __type: 'TimeSheetDay',
+      id: `${id}===${i}`,
+      hours: Math.floor(Math.random() * 8),
+      minutes: Math.floor(Math.random() * 60),
+      year_number: day.yearNum,
+      month_number: day.monthNum,
+      day_number: day.dayNum,
+    })),
+    approvers: [2, 3],
+    approved_by_id: null,
+    approved_by_data: null,
+  };
+  memoizedTimeSheet[id] = result;
+  return Promise.resolve(result);
+}
