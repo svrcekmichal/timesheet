@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import styled, { css } from 'styled-components';
 
-const Box = styled.div`
+const Block = styled.div`
+
+  ${props => props.inline && css`display: inline-block;`}
 
   ${props => props.margin && css`
     margin: ${props.margin};
@@ -37,7 +39,7 @@ const Box = styled.div`
   `}
 `;
 
-Box.propTypes = {
+Block.propTypes = {
   margin: PropTypes.string,
   marginTop: PropTypes.number,
   marginRight: PropTypes.number,
@@ -49,4 +51,4 @@ Box.propTypes = {
   paddingBottom: PropTypes.number,
   paddingLeft: PropTypes.number,
 };
-export default Box;
+export default Block;
