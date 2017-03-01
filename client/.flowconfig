@@ -1,0 +1,12 @@
+
+[include]
+
+[libs]
+./definitions/graphql-schema.js
+
+[ignore]
+<PROJECT_ROOT>/node_modules/fbjs/.*
+<PROJECT_ROOT>/node_modules/styled-components/.*
+<PROJECT_ROOT>/node_modules/babel-relay-plugin/.*
+
+[options]

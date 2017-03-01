@@ -25,7 +25,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "setupProject": "npm run setupRelay && npm run setupFlowRelay",
-    "setupFlowRelay": "node scripts/setupRelay.js",
+    "setupFlowRelay": "gql2flow graphql-schema.json -o definitions/graphql-schema.js",
     "setupRelay": "node scripts/setupRelay.js"
   }
 }
