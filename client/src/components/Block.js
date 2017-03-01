@@ -1,9 +1,12 @@
-import React, { PropTypes } from 'react';
+import { PropTypes } from 'react';
 import styled, { css } from 'styled-components';
 
 const Block = styled.div`
 
-  ${props => props.inline && css`display: inline-block;`}
+  ${props => props.inline && css`
+    display: inline-block;
+    vertical-align: top;
+  `}
 
   ${props => props.margin && css`
     margin: ${props.margin};

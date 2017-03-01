@@ -4,10 +4,17 @@ import React from 'react';
 import Relay from 'react-relay';
 import Block from '../../components/Block'
 import Text from './../../components/Text'
-import getWeekNumber from './../../utils/getWeekNumber';
+import {
+  getWeekNumber,
+  getMaxWeekNumber
+} from '../../utils/dateUtils';
 import UserNotFound from '../../components/UserNotFound';
+import TimesheetWeek from './../TimesheetWeek/TimesheetWeek';
+import TimesheetNotFound from '../../components/TimesheetNotFound';
 
-const getMaxWeekNumber = (year: number) => getWeekNumber(new Date(year, 11, 31));
+
+const today = new Date();
+
 
 const getNewVariables = (year: number, _week: number) => {
   const week = Math.min(_week, getMaxWeekNumber(year));
@@ -18,7 +25,7 @@ const getNewVariables = (year: number, _week: number) => {
 };
 
 const renderYearSelect = (value: number, onChange: (event: SyntheticInputEvent) => void) => {
-  const endYear = (new Date).getFullYear();
+  const endYear = today.getFullYear();
   const options = [];
   for(let year = endYear; year >= endYear -10; year--) {
     options.push(<option key={year} value={year}>{year}</option>)
@@ -64,7 +71,7 @@ export const TimesheetPage = ({
           <Text fontSize={2}>{user.name}'s timesheet</Text>
           <Text fontSize={1}>{user.email}</Text>
         </Block>
-        <Block>
+        <Block marginBottom={1}>
           <Block inline marginRight={1}>
             <label htmlFor="">Year</label>
             {renderYearSelect(year, ({target: {value: newYear}}) => setVariables(getNewVariables(parseInt(newYear,10), week)))}
@@ -73,6 +80,13 @@ export const TimesheetPage = ({
             <label htmlFor="">Week</label>
             {renderWeekSelect(year, week, ({target: {value: newWeek}}) => setVariables(getNewVariables(year, parseInt(newWeek, 10))))}
           </Block>
+        </Block>
+        <Block>
+          {user.weekTimeSheet ? (
+            <TimesheetWeek timeSheetWeek={user.weekTimeSheet} />
+          ) : (
+            <TimesheetNotFound />
+          )}
         </Block>
       </Block>
     ) : (
@@ -83,34 +97,17 @@ export const TimesheetPage = ({
 
 export default Relay.createContainer(TimesheetPage, {
   initialVariables: {
-    year: (new Date).getFullYear(),
-    week: getWeekNumber(new Date)
+    year: today.getFullYear(),
+    week: getWeekNumber(today)
   },
-  fragments: {
+  fragments: { //TODO change weekTimeSheet to timeSheetWeek (not consistent), check timeSheet VS timesheet
     node: () => Relay.QL`
       fragment on User {
         id
         name,
         email
         weekTimeSheet(year: $year, week: $week) {
-          days {
-            id
-            dayNum 
-            monthNum
-            yearNum
-            hours
-            minutes
-          }
-          approvedBy {
-            name
-            email
-          }
-          notes {
-            text
-            author {
-              name
-            }
-          }
+          ${TimesheetWeek.getFragment('timeSheetWeek')}
         }
       } 
     `
