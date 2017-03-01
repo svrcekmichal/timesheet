@@ -22,6 +22,7 @@ import {
 export const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
+    node: nodeField,
     viewer: {
       type: new GraphQLObjectType({
         name: 'Viewer',
@@ -40,6 +41,5 @@ export const QueryType = new GraphQLObjectType({
       }),
       resolve: () => 1
     },
-    node: nodeField
   })
 });

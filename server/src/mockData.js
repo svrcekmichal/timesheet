@@ -14,6 +14,12 @@ moment.updateLocale('en',{ //only working setup
   }
 })
 
+export const TYPES = {
+  USER: 'User',
+  TIME_SHEET_WEEK: 'TimeSheetWeek',
+  TIME_SHEET_DAY: 'TimeSheetDay'
+};
+
 type User = {
   __type: string,
   id: number,
@@ -24,19 +30,19 @@ type User = {
 let userId = 1;
 const users: User[] = [
   {
-    __type:'User',
+    __type: TYPES.USER,
     id: userId++,
     name: 'Michal Svrček',
     email: 'svrcekmichal@gmail.com'
   },
   {
-    __type:'User',
+    __type: TYPES.USER,
     id: userId++,
     name: 'Peter Kowalczyk',
     email: 'peter@aurity.co'
   },
   {
-    __type:'User',
+    __type: TYPES.USER,
     id: userId++,
     name: 'Danuta Kowalczyk',
     email: 'danuta@aurity.co'
@@ -45,7 +51,7 @@ const users: User[] = [
     const email = Faker.internet.email();
     const name = email.split('@')[0];
     return {
-      __type:'User',
+      __type: TYPES.USER,
       id: userId++,
       name,
       email
@@ -108,14 +114,14 @@ export const getUserTimeSheetWeek = (userId: number, year: number, weekNumber: n
     return cache;
   }
   const result = {
-    __type: 'TimeSheetWeek',
+    __type: TYPES.TIME_SHEET_WEEK,
     id,
     year: year,
     week_number: weekNumber,
     status: null,
     owner_id: userId,
     days_in_week: generateWeekDays(year, weekNumber).map((day, i) => ({
-      __type: 'TimeSheetDay',
+      __type: TYPES.TIME_SHEET_DAY,
       id: `${id}===${i}`,
       hours: Math.floor(Math.random() * 8),
       minutes: Math.floor(Math.random() * 60),

@@ -11,6 +11,10 @@ import {
 } from 'graphql-relay';
 
 import {
+  nodeInterface
+} from './../relay';
+
+import {
   TimeSheetWeekType
 } from './TimeSheetWeekType';
 
@@ -40,7 +44,10 @@ export const UserType = new GraphQLObjectType({
       },
       resolve: ({id}, {year, week}) => getUserTimeSheetWeek(id, year, week)
     }
-  })
+  }),
+  interfaces: () => [
+    nodeInterface
+  ]
 });
 
 export const {
