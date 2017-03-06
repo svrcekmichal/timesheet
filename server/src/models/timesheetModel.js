@@ -60,9 +60,8 @@ export const getWeeklyTimesheet = (userId: number, weekId: number): ?WeeklyTimes
       throw new Error('Error while fetching weekly timesheet');
     }
     return res.json();
-  }).then((result: ?QueryResponse<WeeklyTimesheet>) => {
-    if(!result) return null;
-    const weeklyTimesheet = result.data;
+  }).then((weeklyTimesheet: ?WeeklyTimesheet) => {
+    if(!weeklyTimesheet) return null;
     const { hours: totalHours, minutes: totalMinutes } = getTotalTime(weeklyTimesheet.days_in_week);
     return {
       ...weeklyTimesheet,
