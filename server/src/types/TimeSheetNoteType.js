@@ -36,4 +36,5 @@ export const TimesheetNoteType = new GraphQLObjectType({
 
 export const {
   connectionType: TimesheetNoteConnection,
+  edgeType: TimesheetNoteEdgeType
 } = connectionDefinitions({nodeType: TimesheetNoteType});
