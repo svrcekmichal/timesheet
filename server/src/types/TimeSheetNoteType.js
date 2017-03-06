@@ -7,22 +7,33 @@ import {
 } from 'graphql';
 
 import {
-  globalIdField
+  globalIdField,
+  connectionDefinitions
 } from 'graphql-relay';
 
 import {
   UserType
 } from './UserType'
 
-export const TimeSheetNoteType = new GraphQLObjectType({
+import { getUser } from './../models/userModel';
+
+import type { Note } from './../globalFlowTypes';
+
+export const TimesheetNoteType = new GraphQLObjectType({
   name: 'TimeSheetNote',
   fields: () => ({
     id: globalIdField(),
     author: {
-      type: new GraphQLNonNull(UserType)
+      type: new GraphQLNonNull(UserType),
+      resolve: (note: Note) => getUser(note.userId)
     },
     text: {
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString),
+      resolve: (note: Note) => note.message
     }
   })
 });
+
+export const {
+  connectionType: TimesheetNoteConnection,
+} = connectionDefinitions({nodeType: TimesheetNoteType});

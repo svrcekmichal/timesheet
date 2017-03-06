@@ -10,7 +10,9 @@ import {
 } from 'graphql';
 
 import {
-  globalIdField
+  globalIdField,
+  connectionArgs,
+  connectionFromArray
 } from 'graphql-relay'
 
 import {
@@ -21,7 +23,13 @@ import {
   UserType
 } from './UserType'
 
+import {
+  TimesheetNoteConnection
+} from './TimesheetNoteType'
+
 import { getUser } from './../models/userModel'
+
+import { getWeekNotes } from './../models/notesModel';
 
 import type { ExecutionContext, WeeklyTimesheet } from './../globalFlowTypes';
 
@@ -69,9 +77,15 @@ export const WeeklyTimesheetType = new GraphQLObjectType({
         return getUser(timesheet.approved_by_id);
       }
     },
-    // notes: { //TODO
-    //   type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TimeSheetNoteType))),
-    //   resolve: () => []
-    // }
+    notes: {
+      type: new GraphQLNonNull(TimesheetNoteConnection),
+      args: connectionArgs,
+      resolve: (timesheet: WeeklyTimesheet, args) => {
+        return connectionFromArray(
+          getWeekNotes(timesheet.week_id),
+          args
+        )
+      }
+    }
   })
 })

@@ -5,6 +5,7 @@ export type TrackedTime = {
   minutes: number
 };
 
+
 export type DailyTimesheet = {
   owner_id: number,
   id: number,
@@ -47,4 +48,11 @@ export type User = {
 
 export type ExecutionContext = {
   loggedUser: ?User
+}
+
+export type Note = {
+  id: number,
+  userId: number,
+  weekId: number,
+  message: string,
 }
