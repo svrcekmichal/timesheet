@@ -15,6 +15,7 @@ import {
 } from './../relay';
 
 import {
+  UserType,
   UserConnection
 } from './UserType';
 
@@ -24,6 +25,10 @@ export const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     node: nodeField,
+    me: {
+      type: UserType,
+      resolve: (root, args, {loggedUser}) => loggedUser
+    },
     viewer: {
       type: new GraphQLObjectType({
         name: 'Viewer',
