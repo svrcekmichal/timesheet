@@ -15,17 +15,13 @@ import {
   connectionFromArray
 } from 'graphql-relay'
 
-import {
-  DailyTimesheetType
-} from './DailyTimesheetType';
+import { nodeInterface } from './../relay';
 
-import {
-  UserType
-} from './UserType'
+import { DailyTimesheetType } from './DailyTimesheetType';
 
-import {
-  TimesheetNoteConnection
-} from './TimesheetNoteType'
+import { UserType } from './UserType'
+
+import { TimesheetNoteConnection } from './TimesheetNoteType'
 
 import { getUser } from './../models/userModel'
 
@@ -87,5 +83,8 @@ export const WeeklyTimesheetType = new GraphQLObjectType({
         )
       }
     }
-  })
+  }),
+  interfaces: () => [
+    nodeInterface
+  ]
 })

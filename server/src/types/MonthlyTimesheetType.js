@@ -13,9 +13,9 @@ import {
   toGlobalId
 } from 'graphql-relay';
 
-import {
-  WeeklyTimesheetType
-} from './WeeklyTimesheetType'
+import { nodeInterface } from './../relay'
+
+import { WeeklyTimesheetType } from './WeeklyTimesheetType'
 
 import type { MonthlyTimesheet } from './../globalFlowTypes'
 
@@ -46,7 +46,10 @@ export const MonthlyTimesheetType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLInt),
       resolve: (timesheet: MonthlyTimesheet) => timesheet.totalMinutes
     }
-  })
+  }),
+  interfaces: () => [
+    nodeInterface
+  ]
 })
 
 export const {

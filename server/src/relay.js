@@ -5,6 +5,24 @@ import {
 
 import { UserType } from './types/UserType'
 
+import {
+  MonthlyTimesheetType,
+  getPartsOfGlobalId as getPartsOfMonthlyTimesheetGlobalId
+} from './types/MonthlyTimesheetType';
+
+import {
+  WeeklyTimesheetType,
+  getPartsOfGlobalId as getPartsOfWeeklyTimesheetGlobalId
+
+} from './types/WeeklyTimesheetType';
+
+import {
+  getMonthlyTimesheet,
+  getWeeklyTimesheet
+} from './models/timesheetModel';
+
+import { getUser } from './models/userModel';
+
 export const TYPES = {
   USER: 'User',
   MONTHLY_TIMESHEET: 'MonthlyTimesheet',
@@ -19,13 +37,23 @@ export const {
   (globalId) => {
     const {type, id} = fromGlobalId(globalId);
     switch(type) {
-      case TYPES.USER: return getUserById(parseInt(id, 10));
+      case TYPES.USER: return getUser(parseInt(id, 10));
+      case TYPES.MONTHLY_TIMESHEET: {
+        const { userId, year, month } = getPartsOfMonthlyTimesheetGlobalId(id);
+        return getMonthlyTimesheet(userId, year, month);
+      }
+      case TYPES.WEEKLY_TIMESHEET: {
+        const { userId, weekId } = getPartsOfWeeklyTimesheetGlobalId(id);
+        return getWeeklyTimesheet(userId, weekId);
+      }
     }
   },
   (obj) => {
     if(obj.__type) {
       switch(obj.__type) {
         case TYPES.USER: return UserType;
+        case TYPES.MONTHLY_TIMESHEET: return MonthlyTimesheetType;
+        case TYPES.WEEKLY_TIMESHEET: return WeeklyTimesheetType;
       }
     }
     throw new Error('Object type not resolved');
