@@ -3,12 +3,14 @@ import {
   fromGlobalId
 } from 'graphql-relay';
 
-import {
-  TYPES,
-  getUserById,
-} from './mockData'
-
 import { UserType } from './types/UserType'
+
+export const TYPES = {
+  USER: 'User',
+  MONTHLY_TIMESHEET: 'MonthlyTimesheet',
+  WEEKLY_TIMESHEET: 'WeeklyTimesheet',
+  DAILY_TIMESHEET: 'DailyTimesheet',
+};
 
 export const {
   nodeInterface,

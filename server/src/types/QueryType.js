@@ -1,5 +1,8 @@
+// @flow
+
 import {
   GraphQLObjectType,
+  GraphQLNonNull,
 } from 'graphql';
 
 import {
@@ -15,9 +18,7 @@ import {
   UserConnection
 } from './UserType';
 
-import {
-  getUsers
-} from './../mockData';
+import { getUsers } from './../models/userModel';
 
 export const QueryType = new GraphQLObjectType({
   name: 'Query',
@@ -28,7 +29,7 @@ export const QueryType = new GraphQLObjectType({
         name: 'Viewer',
         fields: () => ({
           users: {
-            type: UserConnection,
+            type: new GraphQLNonNull(UserConnection),
             args: connectionArgs,
             resolve: (root, args) => {
               return connectionFromPromisedArray(
@@ -36,10 +37,10 @@ export const QueryType = new GraphQLObjectType({
                 args
               );
             }
-          }
+          },
         })
       }),
       resolve: () => 1
-    },
+    }
   })
 });

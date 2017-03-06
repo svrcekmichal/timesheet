@@ -18,25 +18,30 @@ For now, API is not documented.
       edges {
         node {
           id
-          name,
+          username
           email
-          weekTimeSheet(year: 2016, week: 52) {
-            days {
-              id
-              dayNum
-              monthNum
-              yearNum
-              hours
-              minutes
-            }
-            approvedBy {
-              name
-              email
-            }
-            notes {
-              text
-              author {
-                name
+          timesheet(year: 2017, month: FEBRUARY) {
+            id
+            totalHours
+            totalMinutes
+            weeks {
+            	id
+              weekNumber
+              days {
+                id
+                dayNum
+                hours
+                minutes
+              }
+              approvableByUsers {
+                id
+                username
+              }
+              canApprove
+              approvedAtTime
+              approvedByUser {
+                id
+                username
               }
             }
           }

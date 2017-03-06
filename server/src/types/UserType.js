@@ -1,3 +1,5 @@
+// @flow
+
 import {
   GraphQLNonNull,
   GraphQLObjectType,
@@ -7,6 +9,7 @@ import {
 
 import {
   globalIdField,
+  connectionArgs,
   connectionDefinitions
 } from 'graphql-relay';
 
@@ -15,35 +18,53 @@ import {
 } from './../relay';
 
 import {
-  TimeSheetWeekType
-} from './TimeSheetWeekType';
+  MonthEnum
+} from './MonthEnum';
 
 import {
-  getUserTimeSheetWeek
-} from './../mockData';
+  MonthlyTimesheetType
+} from './MonthlyTimesheetType';
+
+import { getMonthlyTimesheet } from './../models/timesheetModel';
+
+import type { User } from './../globalFlowTypes';
+
+type UserTimesheetArgs = {
+  year: number,
+  month: number
+}
 
 export const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: globalIdField(),
-    name: {
+    username: {
       type: new GraphQLNonNull(GraphQLString),
+      resolve: (user: User) => user.username
     },
     email: {
       type: new GraphQLNonNull(GraphQLString),
+      resolve: (user: User) => user.email
     },
-    weekTimeSheet: {
-      type: TimeSheetWeekType,
+    timesheet: {
+      type: MonthlyTimesheetType,
       args: {
         year: {
+          description: 'Year of timesheet',
           type: new GraphQLNonNull(GraphQLInt)
         },
-        week: {
-          type: new GraphQLNonNull(GraphQLInt)
+        month: {
+          description: 'Month of timesheet',
+          type: new GraphQLNonNull(MonthEnum)
         }
       },
-      resolve: ({id}, {year, week}) => getUserTimeSheetWeek(id, year, week)
-    }
+      resolve: (user: User, { year, month }: UserTimesheetArgs) => getMonthlyTimesheet(user.id, year, month)
+    },
+    // timesheets: {
+    //   type: new GraphQLNonNull(MonthlyTimesheetConnection),
+    //   args: connectionArgs,
+    //   resolve: () => {} //TODO
+    // }
   }),
   interfaces: () => [
     nodeInterface
