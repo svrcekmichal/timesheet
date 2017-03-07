@@ -47,6 +47,14 @@ export const WeeklyTimesheetType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLInt),
       resolve: (timesheet: WeeklyTimesheet) => timesheet.week_number
     },
+    totalHours: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (timesheet: WeeklyTimesheet) => timesheet.totalHours
+    },
+    totalMinutes: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (timesheet: WeeklyTimesheet) => timesheet.totalMinutes
+    },
     days: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(DailyTimesheetType))),
       resolve: (timesheet: WeeklyTimesheet) => timesheet.days_in_week

@@ -33,16 +33,21 @@ export const getMonthlyTimesheet = (userId: number, year: number, month: number)
       ...timesheet,
       __type: TYPES.MONTHLY_TIMESHEET,
       //owner_id is not present in weeks and days if fetched with monthly query
-      weeks: timesheet.weeks.map(week => ({
-        ...week,
-        __type: TYPES.WEEKLY_TIMESHEET,
-        owner_id: userId,
-        days_in_week: week.days_in_week.map((day: DailyTimesheet) => ({
-          ...day,
-          __type: TYPES.DAILY_TIMESHEET,
-          owner_id: userId
-        }))
-      })),
+      weeks: timesheet.weeks.map(week => {
+        const { hours: totalHours, minutes: totalMinutes } = getTotalTime(week.days_in_week);
+        return {
+          ...week,
+          __type: TYPES.WEEKLY_TIMESHEET,
+          owner_id: userId,
+          days_in_week: week.days_in_week.map((day: DailyTimesheet) => ({
+            ...day,
+            __type: TYPES.DAILY_TIMESHEET,
+            owner_id: userId
+          })),
+          totalHours,
+          totalMinutes
+        };
+      }),
       //TODO fix on API level, owner_id is expected to be number, not string
       owner_id: parseInt(timesheet.owner_id, 10),
       totalHours,
