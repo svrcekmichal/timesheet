@@ -1,7 +1,8 @@
 import React from 'react';
 import Relay from 'react-relay';
-import { Panel, Grid, Row, Col, Button, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Panel, Grid, Row, Col, Button, ListGroup, ListGroupItem, FormControl } from 'react-bootstrap'
 import styled from 'styled-components';
+import ChangeWeeklyTimesheetStatus from './../../mutations/ChangeWeeklyTimesheetStatus'
 
 type Props = {
   timesheet: WeeklyTimesheet
@@ -38,9 +39,15 @@ export const TimesheetWeekView = ({
 
   );
 
-  return expanded ? (
-    <Panel>
-      {headerPart}
+  let bsStyle;
+  switch(timesheet.status) {
+    case 'APPROVED': bsStyle = 'success'; break;
+    case 'REJECTED': bsStyle = 'danger'; break;
+    case 'WAITING': bsStyle = 'info'; break;
+  }
+
+  return (
+    <Panel bsStyle={bsStyle} header={headerPart}>
       {expanded && (
         <Grid>
           <Row>
@@ -54,13 +61,42 @@ export const TimesheetWeekView = ({
                 ))}
               </ListGroup>
             </Col>
+            <Col xs={4}>
+              {timesheet.approvedByUser && (
+                <h5>
+                  <p>Timesheet status changed</p>
+                  <p>by <strong>{timesheet.approvedByUser.username}({timesheet.approvedByUser.email})</strong></p>
+                  <p>at {timesheet.approvedAtTime}</p>
+                </h5>
+              )}
+              {timesheet.canApprove ? (
+                <div>
+                  <FormControl
+                    componentClass="select"
+                    name="month"
+                    defaultValue={timesheet.status}
+                    onChange={e => relay.commitUpdate(new ChangeWeeklyTimesheetStatus({
+                      timesheet,
+                      status: e.target.value
+                    }))}
+                  >
+                    <option value="APPROVED">approved</option>
+                    <option value="REJECTED">rejected</option>
+                    <option value="WAITING">waiting</option>
+                  </FormControl>
+                </div>
+              ) : (
+                <ul className="list-unstyled">
+                  You can't change timesheet status. Contact one of following users:
+                  {timesheet.approvableByUsers.map((user, i) => (
+                    <li key={i}>{user.username}({user.email})</li>
+                  ))}
+                </ul>
+              )}
+            </Col>
           </Row>
         </Grid>
       )}
-    </Panel>
-  ) : (
-    <Panel>
-      {headerPart}
     </Panel>
   );
 }
@@ -72,10 +108,22 @@ export default Relay.createContainer(TimesheetWeekView,{
   fragments: {
     timesheet: () => Relay.QL`
       fragment on WeeklyTimesheet {
+        ${ChangeWeeklyTimesheetStatus.getFragment('timesheet')}
         id
+        status
         weekNumber
         totalHours
         totalMinutes
+        canApprove
+        approvedAtTime
+        approvedByUser {
+          username
+          email
+        }
+        approvableByUsers {
+          username
+          email
+        }
         days @include(if: $expanded) {
           id
           dayNum

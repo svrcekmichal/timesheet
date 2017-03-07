@@ -6,7 +6,7 @@ exports.schemaPath = path.resolve(__dirname, '../graphql-schema.json');
 
 exports.getBabelRelayPlugin = function(){
   if(!fs.existsSync(exports.schemaPath)) {
-    console.log(chalk.red('GraphQL schema not found - have you run "npm run setupRelay"?'))
+    console.log(chalk.red('GraphQL schema not found - have you run "npm run setupProject"?'))
     process.exit("GraphQL schema not found");
   }
 

@@ -6,9 +6,13 @@ import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import useRelay from 'react-router-relay';
 import routes from './routes';
 
+//QUICK LOGIN HACK
+const {query: queryParams} = browserHistory.getCurrentLocation();
+const userId = !!queryParams.userId ? `?userId=${queryParams.userId}` : "";
+
 Relay.injectNetworkLayer(new RelayNetworkLayer([
   urlMiddleware({
-    url: process.env.REACT_APP_GRAPHQL_ENDPOINT
+    url: process.env.REACT_APP_GRAPHQL_ENDPOINT + userId
   })
 ], { disableBatchQuery: true }));
 
