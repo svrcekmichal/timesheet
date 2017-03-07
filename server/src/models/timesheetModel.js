@@ -15,6 +15,8 @@ import { TYPES } from './../relay';
 
 const getTotalMonthTime = (timesheet: MonthlyTimesheet) => getTotalTime(timesheet.weeks.map((week: WeeklyTimesheet) => getTotalTime(week.days_in_week)))
 
+const sortWeeks = (a: WeeklyTimesheet, b: WeeklyTimesheet) => a.week_number > b.week_number ? 1 : -1;
+
 export const getMonthlyTimesheet = (userId: number, year: number, month: number): ?MonthlyTimesheet =>
   fetch(API_ENPOINTS.monthlyTimesheet(userId, year, month))
   .then(res => {
@@ -33,7 +35,9 @@ export const getMonthlyTimesheet = (userId: number, year: number, month: number)
       ...timesheet,
       __type: TYPES.MONTHLY_TIMESHEET,
       //owner_id is not present in weeks and days if fetched with monthly query
-      weeks: timesheet.weeks.map(week => {
+      weeks: timesheet.weeks
+        .sort(sortWeeks) //TODO fix on API level, not sorted weeks returned
+        .map(week => {
         const { hours: totalHours, minutes: totalMinutes } = getTotalTime(week.days_in_week);
         return {
           ...week,
