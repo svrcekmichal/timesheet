@@ -1,4 +1,4 @@
-import Relay from 'react-relay';
+import Relay from "react-relay";
 
 export default class ChangeWeeklyTimesheetStatus extends Relay.Mutation {
 

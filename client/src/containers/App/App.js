@@ -1,16 +1,16 @@
-import React from 'react';
-import Relay from 'react-relay';
-import { Link } from 'react-router';
-import { Navbar, Nav, NavDropdown, NavItem, MenuItem } from 'react-bootstrap';
+import React from "react";
+import Relay from "react-relay";
+import {Link} from "react-router";
+import {MenuItem, Nav, Navbar, NavDropdown, NavItem} from "react-bootstrap";
 
 const style = {
   marginTop: 50
 }
 
 export function App({
-  me,
-  children
-}) {
+                      me,
+                      children
+                    }) {
   return (
     <div>
       <Navbar fixedTop>
@@ -38,7 +38,7 @@ export function App({
   )
 }
 
-export default Relay.createContainer(App,{
+export default Relay.createContainer(App, {
   fragments: {
     me: () => Relay.QL`
       fragment on User {

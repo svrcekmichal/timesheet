@@ -1,8 +1,8 @@
-import React from 'react';
-import Relay from 'react-relay';
-import { Panel, Grid, Row, Col, Button, ListGroup, ListGroupItem, FormControl } from 'react-bootstrap'
-import styled from 'styled-components';
-import ChangeWeeklyTimesheetStatus from './../../mutations/ChangeWeeklyTimesheetStatus'
+import React from "react";
+import Relay from "react-relay";
+import {Button, Col, FormControl, Grid, ListGroup, ListGroupItem, Panel, Row} from "react-bootstrap";
+import styled from "styled-components";
+import ChangeWeeklyTimesheetStatus from "./../../mutations/ChangeWeeklyTimesheetStatus";
 
 type Props = {
   timesheet: WeeklyTimesheet
@@ -21,10 +21,10 @@ const StyledPullRight = styled(StyledText)`
 `
 
 export const TimesheetWeekView = ({
-  relay,
-  timesheet
-}: Props) => {
-  const { expanded } = relay.variables;
+                                    relay,
+                                    timesheet
+                                  }: Props) => {
+  const {expanded} = relay.variables;
 
   const headerPart = (
     <div>
@@ -33,17 +33,27 @@ export const TimesheetWeekView = ({
         (Total logged time: {timesheet.totalHours}h {timesheet.totalMinutes}m)
       </StyledText>
       <StyledPullRight>
-        <Button bsSize="small" onClick={() => relay.setVariables({expanded: !expanded})}>{expanded ? 'Hide' : 'Expand'}</Button>
+        <Button bsSize="small"
+                onClick={() => relay.setVariables({expanded: !expanded})}>{expanded ? 'Hide' : 'Expand'}</Button>
       </StyledPullRight>
     </div>
 
   );
 
   let bsStyle;
-  switch(timesheet.status) {
-    case 'APPROVED': bsStyle = 'success'; break;
-    case 'REJECTED': bsStyle = 'danger'; break;
-    case 'WAITING': bsStyle = 'info'; break;
+  switch (timesheet.status) {
+    case 'APPROVED':
+      bsStyle = 'success';
+      break;
+    case 'REJECTED':
+      bsStyle = 'danger';
+      break;
+    case 'WAITING':
+      bsStyle = 'info';
+      break;
+    default: {
+      bsStyle = '';
+    }
   }
 
   return (
@@ -101,7 +111,7 @@ export const TimesheetWeekView = ({
   );
 }
 
-export default Relay.createContainer(TimesheetWeekView,{
+export default Relay.createContainer(TimesheetWeekView, {
   initialVariables: {
     expanded: false
   },

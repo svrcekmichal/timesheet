@@ -1,8 +1,8 @@
 // @flow
 
-import React from 'react';
-import { Jumbotron, Button } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap';
+import React from "react";
+import {Button, Jumbotron} from "react-bootstrap";
+import {LinkContainer} from "react-router-bootstrap";
 
 export default () => (
   <Jumbotron>

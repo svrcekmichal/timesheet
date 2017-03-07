@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Router, browserHistory, applyRouterMiddleware } from 'react-router';
-import Relay from 'react-relay';
-import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
-import useRelay from 'react-router-relay';
-import routes from './routes';
+import React from "react";
+import ReactDOM from "react-dom";
+import {applyRouterMiddleware, browserHistory, Router} from "react-router";
+import Relay from "react-relay";
+import {RelayNetworkLayer, urlMiddleware} from "react-relay-network-layer";
+import useRelay from "react-router-relay";
+import routes from "./routes";
 
 //QUICK LOGIN HACK
 const {query: queryParams} = browserHistory.getCurrentLocation();
@@ -14,7 +14,7 @@ Relay.injectNetworkLayer(new RelayNetworkLayer([
   urlMiddleware({
     url: process.env.REACT_APP_GRAPHQL_ENDPOINT + userId
   })
-], { disableBatchQuery: true }));
+], {disableBatchQuery: true}));
 
 ReactDOM.render(
   <Router
@@ -23,5 +23,5 @@ ReactDOM.render(
     environment={Relay.Store}
     routes={routes}
   />
-  ,document.getElementById('root')
+  , document.getElementById('root')
 );

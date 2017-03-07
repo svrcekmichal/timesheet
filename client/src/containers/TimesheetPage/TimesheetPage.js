@@ -1,16 +1,13 @@
 // @flow
 
-import React, { Component } from 'react';
-import Relay from 'react-relay';
-import styled from 'styled-components';
-import { Grid, Row, Col, Form, FormGroup, PanelGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
-import {
-  getMonthName,
-  getMonths
-} from '../../utils/dateUtils';
-import UserNotFound from '../../components/UserNotFound';
-import TimesheetWeekView from './../TimesheetWeekView/TimesheetWeekView';
-import TimesheetNotFound from '../../components/TimesheetNotFound';
+import React, {Component} from "react";
+import Relay from "react-relay";
+import styled from "styled-components";
+import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Grid, PanelGroup, Row} from "react-bootstrap";
+import {getMonthName, getMonths} from "../../utils/dateUtils";
+import UserNotFound from "../../components/UserNotFound";
+import TimesheetWeekView from "./../TimesheetWeekView/TimesheetWeekView";
+import TimesheetNotFound from "../../components/TimesheetNotFound";
 
 const today = new Date();
 
@@ -40,14 +37,14 @@ export class TimesheetPage extends Component {
 
   constructor(props) {
     super(props);
-    (this:any).state = {
+    (this: any).state = {
       year: this.props.relay.variables.year,
       month: this.props.relay.variables.month,
     };
-    (this:any).setValueFromForm = this.setValueFromForm.bind(this);
-    (this:any).renderYearSelect = this.renderYearSelect.bind(this);
-    (this:any).renderMonthSelect = this.renderMonthSelect.bind(this);
-    (this:any).onFormSubmit = this.onFormSubmit.bind(this);
+    (this: any).setValueFromForm = this.setValueFromForm.bind(this);
+    (this: any).renderYearSelect = this.renderYearSelect.bind(this);
+    (this: any).renderMonthSelect = this.renderMonthSelect.bind(this);
+    (this: any).onFormSubmit = this.onFormSubmit.bind(this);
   }
 
   setValueFromForm(e: SyntheticEvent) {
@@ -58,7 +55,7 @@ export class TimesheetPage extends Component {
   renderYearSelect() {
     const endYear = today.getFullYear();
     const options = [];
-    for(let year = endYear; year >= endYear -10; year--) {
+    for (let year = endYear; year >= endYear - 10; year--) {
       options.push(<option key={year} value={year}>{year}</option>)
     }
     return (
@@ -88,12 +85,12 @@ export class TimesheetPage extends Component {
   }
 
   render() {
-    const { node: user, relay } = this.props;
+    const {node: user, relay} = this.props;
     return (
       <Grid>
         <Row>
           {user ? (
-            <Col xs={12} >
+            <Col xs={12}>
               <h3>{user.username}'s timesheets</h3>
               <Form inline onSubmit={this.onFormSubmit}>
                 <StyledFormGroup>
@@ -114,7 +111,7 @@ export class TimesheetPage extends Component {
                     <h4>Showing timesheet for {formatMonthName(relay.variables.month)} {relay.variables.year}</h4>
                     <PanelGroup>
                       {user.timesheet.weeks.map(week => (
-                        <TimesheetWeekView key={week.id} timesheet={week} />
+                        <TimesheetWeekView key={week.id} timesheet={week}/>
                       ))}
                     </PanelGroup>
                   </div>
@@ -124,7 +121,7 @@ export class TimesheetPage extends Component {
               )}
             </Col>
           ) : (
-            <Col xs={12} >
+            <Col xs={12}>
               <UserNotFound />
             </Col>
           )}

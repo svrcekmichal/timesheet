@@ -17,5 +17,5 @@ const monthNames = [
 
 export const getMonths = () => monthNames;
 
-export const getMonthName = (index:number) => monthNames[index];
+export const getMonthName = (index: number) => monthNames[index];
 
