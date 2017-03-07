@@ -5,7 +5,6 @@ import Relay from 'react-relay';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
 import useRelay from 'react-router-relay';
 import routes from './routes';
-import './index.css';
 
 Relay.injectNetworkLayer(new RelayNetworkLayer([
   urlMiddleware({

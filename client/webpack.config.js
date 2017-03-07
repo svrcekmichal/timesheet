@@ -13,6 +13,7 @@ module.exports = function(webpackConfig, isDevelopment) {
   babelRule.options.cacheDirectory = true;
   babelRule.options.cacheIdentifier = fs.statSync('./graphql-schema.json').mtime;
 
+   babelRule.options.plugins.push('styled-components');
 
   return webpackConfig;
 }

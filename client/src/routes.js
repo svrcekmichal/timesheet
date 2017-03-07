@@ -1,14 +1,27 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
-import Dashboard from './containers/DashboardPage/DashboardPage'
-import Timesheet from './containers/TimesheetPage/TimesheetPage'
+import App from './containers/App/App';
+import DashboardPage from './containers/DashboardPage/DashboardPage'
+import TimesheetPage from './containers/TimesheetPage/TimesheetPage'
 
-import { ViewerQueries, NodeQueries } from './queries';
+import queries from './queries';
+
+const ViewerQuery = {
+  viewer: queries.viewer
+}
+
+const MeQuery = {
+  me: queries.me
+}
+
+const NodeQuery = {
+  node: queries.node
+}
 
 export default (
-  <Route path="/">
-    <IndexRoute queries={ViewerQueries} component={Dashboard} />
-    <Route path="timesheet/:id" queries={NodeQueries} component={Timesheet} />
+  <Route queries={MeQuery} component={App} path="/">
+    <IndexRoute queries={ViewerQuery} component={DashboardPage} />
+    <Route path="timesheet/:id" queries={NodeQuery} component={TimesheetPage} />
   </Route>
 )

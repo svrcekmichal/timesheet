@@ -1,8 +1,10 @@
 // @flow
 
 import React from 'react';
-import Text from './Text'
+import { Jumbotron } from 'react-bootstrap'
 
 export default () => (
-  <Text fontSize={2}>Timesheet not found!</Text>
+  <Jumbotron>
+    <h2>Timesheet not found</h2>
+  </Jumbotron>
 )

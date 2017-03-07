@@ -1,8 +1,15 @@
 // @flow
 
 import React from 'react';
-import Text from './Text'
+import { Jumbotron, Button } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap';
 
 export default () => (
-  <Text fontSize={2}>User not found!</Text>
+  <Jumbotron>
+    <h1>User not found</h1>
+    <p>User with specified id not found</p>
+    <LinkContainer to="/">
+      <Button bsStyle="primary">Go to dashboard</Button>
+    </LinkContainer>
+  </Jumbotron>
 )
