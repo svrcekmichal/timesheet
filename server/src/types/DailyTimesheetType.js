@@ -1,16 +1,9 @@
 // @flow
 
-import {
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLInt,
-} from 'graphql';
+import {GraphQLInt, GraphQLNonNull, GraphQLObjectType} from "graphql";
+import {globalIdField} from "graphql-relay";
 
-import {
-  globalIdField
-} from 'graphql-relay'
-
-import type { DailyTimesheet } from './../globalFlowTypes'
+import type {DailyTimesheet} from "./../globalFlowTypes";
 
 const createGlobalId = (timesheet: DailyTimesheet) => `${timesheet.owner_id}_${timesheet.id}`;
 

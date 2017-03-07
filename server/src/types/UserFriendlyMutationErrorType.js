@@ -1,8 +1,4 @@
-import {
-  GraphQLNonNull,
-  GraphQLString,
-  GraphQLObjectType,
-} from 'graphql';
+import {GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
 
 export const GLOBAL_KEY = 'GLOBAL';
 

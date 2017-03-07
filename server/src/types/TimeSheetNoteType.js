@@ -1,23 +1,11 @@
 // @flow
 
-import {
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLString
-} from 'graphql';
+import {GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
+import {connectionDefinitions, globalIdField} from "graphql-relay";
+import {UserType} from "./UserType";
+import {getUser} from "./../models/userModel";
 
-import {
-  globalIdField,
-  connectionDefinitions
-} from 'graphql-relay';
-
-import {
-  UserType
-} from './UserType'
-
-import { getUser } from './../models/userModel';
-
-import type { Note } from './../globalFlowTypes';
+import type {Note} from "./../globalFlowTypes";
 
 export const TimesheetNoteType = new GraphQLObjectType({
   name: 'TimeSheetNote',

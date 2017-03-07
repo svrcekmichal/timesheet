@@ -1,25 +1,10 @@
 // @flow
 
-import {
-  GraphQLObjectType,
-  GraphQLNonNull,
-} from 'graphql';
-
-import {
-  connectionArgs,
-  connectionFromPromisedArray,
-} from 'graphql-relay';
-
-import {
-  nodeField
-} from './../relay';
-
-import {
-  UserType,
-  UserConnection
-} from './UserType';
-
-import { getUsers } from './../models/userModel';
+import {GraphQLNonNull, GraphQLObjectType} from "graphql";
+import {connectionArgs, connectionFromPromisedArray} from "graphql-relay";
+import {nodeField} from "./../relay";
+import {UserConnection, UserType} from "./UserType";
+import {getUser, getUsers} from "./../models/userModel";
 
 export const QueryType = new GraphQLObjectType({
   name: 'Query',
@@ -27,7 +12,7 @@ export const QueryType = new GraphQLObjectType({
     node: nodeField,
     me: {
       type: UserType,
-      resolve: (root, args, {loggedUser}) => loggedUser
+      resolve: (root, args, {loggedUser}) => loggedUser && getUser(loggedUser)
     },
     viewer: {
       type: new GraphQLObjectType({

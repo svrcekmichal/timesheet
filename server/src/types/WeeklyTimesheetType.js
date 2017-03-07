@@ -1,33 +1,16 @@
 // @flow
 
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString,
-  GraphQLNonNull,
-  GraphQLList,
-  GraphQLBoolean,
-} from 'graphql';
+import {GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
+import {connectionArgs, connectionFromArray, globalIdField} from "graphql-relay";
+import {nodeInterface} from "./../relay";
+import {DailyTimesheetType} from "./DailyTimesheetType";
+import {UserType} from "./UserType";
+import {TimesheetNoteConnection} from "./TimesheetNoteType";
+import {WeeklyTimesheetStatusEnum} from "./WeeklyTimesheetStatusEnum";
+import {getUser} from "./../models/userModel";
+import {getWeekNotes} from "./../models/notesModel";
 
-import {
-  globalIdField,
-  connectionArgs,
-  connectionFromArray
-} from 'graphql-relay'
-
-import { nodeInterface } from './../relay';
-
-import { DailyTimesheetType } from './DailyTimesheetType';
-
-import { UserType } from './UserType'
-
-import { TimesheetNoteConnection } from './TimesheetNoteType'
-
-import { getUser } from './../models/userModel'
-
-import { getWeekNotes } from './../models/notesModel';
-
-import type { ExecutionContext, WeeklyTimesheet } from './../globalFlowTypes';
+import type {ExecutionContext, WeeklyTimesheet} from "./../globalFlowTypes";
 
 const createGlobalId = (timesheet: WeeklyTimesheet) => `${timesheet.owner_id}_${timesheet.week_id}`;
 
@@ -43,6 +26,13 @@ export const WeeklyTimesheetType = new GraphQLObjectType({
   name: 'WeeklyTimesheet',
   fields: () => ({
     id: globalIdField(null, createGlobalId),
+    status: {
+      type: WeeklyTimesheetStatusEnum,
+      resolve: (timesheet: WeeklyTimesheet) => {
+        if (timesheet.status === 'reject') return 'rejected'; //TODO not consistent in API level
+        return timesheet.status;
+      }
+    },
     weekNumber: {
       type: new GraphQLNonNull(GraphQLInt),
       resolve: (timesheet: WeeklyTimesheet) => timesheet.week_number
@@ -65,19 +55,20 @@ export const WeeklyTimesheetType = new GraphQLObjectType({
     },
     canApprove: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      resolve: (timesheet: WeeklyTimesheet, args, { loggedUser }: ExecutionContext) => {
-        if(!loggedUser) return false;
-        return timesheet.approvers.indexOf(loggedUser.id) !== -1;
+      resolve: (timesheet: WeeklyTimesheet, args, {loggedUser}: ExecutionContext) => {
+        if (!loggedUser) return false;
+        console.log(timesheet.approvers, loggedUser);
+        return timesheet.approvers.indexOf(loggedUser) !== -1;
       }
     },
     approvedAtTime: {
       type: GraphQLString,
-      resolve: (timesheet: WeeklyTimesheet) => timesheet.approved_by_date && new Date(Date.parse(timesheet.approved_by_date.replace('-','/','g')))
+      resolve: (timesheet: WeeklyTimesheet) => timesheet.approved_by_date && new Date(Date.parse(timesheet.approved_by_date.replace('-', '/', 'g')))
     },
     approvedByUser: {
       type: UserType,
       resolve: (timesheet: WeeklyTimesheet) => {
-        if(!timesheet.approved_by_id) return null;
+        if (!timesheet.approved_by_id) return null;
         return getUser(timesheet.approved_by_id);
       }
     },

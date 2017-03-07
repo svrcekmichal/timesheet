@@ -1,6 +1,6 @@
 // @flow
 
-import type { Note } from './../globalFlowTypes';
+import type {Note} from "./../globalFlowTypes";
 
 let noteId = 1;
 

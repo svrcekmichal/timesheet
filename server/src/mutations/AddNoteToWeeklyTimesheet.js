@@ -1,27 +1,11 @@
-import {
-  GraphQLNonNull,
-  GraphQLID,
-  GraphQLString,
-  GraphQLList,
-} from 'graphql';
-
-import {
-  mutationWithClientMutationId,
-  fromGlobalId,
-  cursorForObjectInConnection
-} from 'graphql-relay';
-
-import { UserFriendlyMutationErrorType, GLOBAL_KEY } from './../types/UserFriendlyMutationErrorType';
-
-import { WeeklyTimesheetType, getPartsOfGlobalId } from './../types/WeeklyTimesheetType';
-
-import { TimesheetNoteEdgeType } from './../types/TimesheetNoteType';
-
-import { addNote, getWeekNotes } from './../models/notesModel';
-
-import { getWeeklyTimesheet } from './../models/timesheetModel';
-
-import { TYPES } from './../relay';
+import {GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString} from "graphql";
+import {cursorForObjectInConnection, fromGlobalId, mutationWithClientMutationId} from "graphql-relay";
+import {GLOBAL_KEY, UserFriendlyMutationErrorType} from "./../types/UserFriendlyMutationErrorType";
+import {getPartsOfGlobalId, WeeklyTimesheetType} from "./../types/WeeklyTimesheetType";
+import {TimesheetNoteEdgeType} from "./../types/TimesheetNoteType";
+import {addNote, getWeekNotes} from "./../models/notesModel";
+import {getWeeklyTimesheet} from "./../models/timesheetModel";
+import {TYPES} from "./../relay";
 
 const createError = (key, value) => ({key, value});
 
@@ -37,8 +21,7 @@ export const AddNoteToWeeklyTimesheet = mutationWithClientMutationId({
     message: {
       description: 'Note message',
       type: new GraphQLNonNull(GraphQLString),
-    },
-    clientMutationId: {}
+    }
   },
 
   outputFields: {
@@ -49,8 +32,8 @@ export const AddNoteToWeeklyTimesheet = mutationWithClientMutationId({
     },
     newNoteEdge: {
       type: TimesheetNoteEdgeType,
-      resolve: ({ weekId, note }) => {
-        if(!weekId || !note) return null;
+      resolve: ({weekId, note}) => {
+        if (!weekId || !note) return null;
         const notes = getWeekNotes(weekId);
         return {
           node: note,
@@ -72,7 +55,7 @@ export const AddNoteToWeeklyTimesheet = mutationWithClientMutationId({
       errors: []
     };
     const {type, id: weekIdPart} = fromGlobalId(globalWeekId);
-    const { userId: weekOwnerId, weekId } = getPartsOfGlobalId(weekIdPart);
+    const {userId: weekOwnerId, weekId} = getPartsOfGlobalId(weekIdPart);
     if (!loggedUser) {
       result.errors.push(createError(GLOBAL_KEY, 'You must be logged in to create notes'));
     }
@@ -85,7 +68,7 @@ export const AddNoteToWeeklyTimesheet = mutationWithClientMutationId({
     if (result.errors.length > 0) {
       return result;
     }
-    result.note = addNote(loggedUser.id, weekId, message);
+    result.note = addNote(loggedUser, weekId, message);
     result.ownerId = weekOwnerId;
     result.weekId = weekId;
     return result;

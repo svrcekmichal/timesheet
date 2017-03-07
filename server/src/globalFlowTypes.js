@@ -47,7 +47,7 @@ export type User = {
 }
 
 export type ExecutionContext = {
-  loggedUser: ?User
+  loggedUser: ?number
 }
 
 export type Note = {

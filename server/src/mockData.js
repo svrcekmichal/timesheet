@@ -4,13 +4,13 @@
  * All the mocking stuff, really ugly code :D
  */
 
-import Faker from 'faker';
-import moment from 'moment';
+import Faker from "faker";
+import moment from "moment";
 
-moment.updateLocale('en',{ //only working setup
-  week : {
-    dow : 0, // Sunday is the first day of the week.
-    doy : 4  // The week that contains Jan 4th is the first week of the year.
+moment.updateLocale('en', { //only working setup
+  week: {
+    dow: 0, // Sunday is the first day of the week.
+    doy: 4  // The week that contains Jan 4th is the first week of the year.
   }
 })
 
@@ -59,7 +59,7 @@ const users: User[] = [
   }))
 ];
 
-export const getUserById = (id: number) => new Promise((resolve,reject) => {
+export const getUserById = (id: number) => new Promise((resolve, reject) => {
   const user = users.find((user) => user.id === id);
   user ? resolve(user) : reject(new Error('User does not exists'));
 })
@@ -94,7 +94,7 @@ const generateWeekDays = (year, week) => {
   const day = moment().year(year).week(week);
   console.log(day.day())
   const days = [];
-  for(let i = 0; i < 7; i++ ) {
+  for (let i = 0; i < 7; i++) {
     day.add(1, 'd');
     days.push({
       yearNum: day.get('year'),
@@ -107,10 +107,10 @@ const generateWeekDays = (year, week) => {
 
 const memoizedTimeSheet = Object.create(null);
 
-export const getUserTimeSheetWeek = (userId: number, year: number, weekNumber: number):Promise<UserTimeSheetWeekResponse> => {
+export const getUserTimeSheetWeek = (userId: number, year: number, weekNumber: number): Promise<UserTimeSheetWeekResponse> => {
   const id = `${userId}_${year}_${weekNumber}`;
   const cache = memoizedTimeSheet[id];
-  if(typeof cache !== 'undefined') {
+  if (typeof cache !== 'undefined') {
     return cache;
   }
   const result = {

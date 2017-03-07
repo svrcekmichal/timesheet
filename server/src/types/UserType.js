@@ -1,33 +1,13 @@
 // @flow
 
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLInt
-} from 'graphql';
+import {GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString} from "graphql";
+import {connectionDefinitions, globalIdField} from "graphql-relay";
+import {nodeInterface} from "./../relay";
+import {MonthEnum} from "./MonthEnum";
+import {MonthlyTimesheetType} from "./MonthlyTimesheetType";
+import {getMonthlyTimesheet} from "./../models/timesheetModel";
 
-import {
-  globalIdField,
-  connectionArgs,
-  connectionDefinitions
-} from 'graphql-relay';
-
-import {
-  nodeInterface
-} from './../relay';
-
-import {
-  MonthEnum
-} from './MonthEnum';
-
-import {
-  MonthlyTimesheetType
-} from './MonthlyTimesheetType';
-
-import { getMonthlyTimesheet } from './../models/timesheetModel';
-
-import type { User } from './../globalFlowTypes';
+import type {User} from "./../globalFlowTypes";
 
 type UserTimesheetArgs = {
   year: number,
@@ -58,7 +38,7 @@ export const UserType = new GraphQLObjectType({
           type: new GraphQLNonNull(MonthEnum)
         }
       },
-      resolve: (user: User, { year, month }: UserTimesheetArgs) => getMonthlyTimesheet(user.id, year, month)
+      resolve: (user: User, {year, month}: UserTimesheetArgs) => getMonthlyTimesheet(user.id, year, month)
     },
     // timesheets: {
     //   type: new GraphQLNonNull(MonthlyTimesheetConnection),

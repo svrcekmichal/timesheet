@@ -1,23 +1,11 @@
 // @flow
 
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLNonNull,
-  GraphQLList,
-} from 'graphql';
+import {GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType} from "graphql";
+import {connectionDefinitions, globalIdField, toGlobalId} from "graphql-relay";
+import {nodeInterface} from "./../relay";
+import {WeeklyTimesheetType} from "./WeeklyTimesheetType";
 
-import {
-  connectionDefinitions,
-  globalIdField,
-  toGlobalId
-} from 'graphql-relay';
-
-import { nodeInterface } from './../relay'
-
-import { WeeklyTimesheetType } from './WeeklyTimesheetType'
-
-import type { MonthlyTimesheet } from './../globalFlowTypes'
+import type {MonthlyTimesheet} from "./../globalFlowTypes";
 
 export const createGlobalId = (timesheet: MonthlyTimesheet) => toGlobalId(`${timesheet.owner_id}_${timesheet.year}_${timesheet.month}`);
 
