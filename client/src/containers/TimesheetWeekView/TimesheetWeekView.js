@@ -3,6 +3,7 @@ import Relay from "react-relay";
 import {Button, Col, FormControl, Grid, ListGroup, ListGroupItem, Panel, Row} from "react-bootstrap";
 import styled from "styled-components";
 import ChangeWeeklyTimesheetStatus from "./../../mutations/ChangeWeeklyTimesheetStatus";
+import WeeklyTimesheetNotes from './../WeeklyTimesheetNotes/WeeklyTimesheetNotes';
 
 type Props = {
   timesheet: WeeklyTimesheet
@@ -52,7 +53,7 @@ export const TimesheetWeekView = ({
       bsStyle = 'info';
       break;
     default: {
-      bsStyle = '';
+      bsStyle = undefined;
     }
   }
 
@@ -84,24 +85,30 @@ export const TimesheetWeekView = ({
                   <FormControl
                     componentClass="select"
                     name="month"
-                    defaultValue={timesheet.status}
+                    value={timesheet.status || ""}
                     onChange={e => relay.commitUpdate(new ChangeWeeklyTimesheetStatus({
                       timesheet,
                       status: e.target.value
                     }))}
                   >
+                    <option value="" disabled>Select new status</option>
                     <option value="APPROVED">approved</option>
                     <option value="REJECTED">rejected</option>
                     <option value="WAITING">waiting</option>
                   </FormControl>
+                  <WeeklyTimesheetNotes timesheet={timesheet} />
                 </div>
               ) : (
-                <ul className="list-unstyled">
-                  You can't change timesheet status. Contact one of following users:
-                  {timesheet.approvableByUsers.map((user, i) => (
-                    <li key={i}>{user.username}({user.email})</li>
-                  ))}
-                </ul>
+                <div>
+                  <ul className="list-unstyled">
+                    You can't change timesheet status. Contact one of following users:
+                    {timesheet.approvableByUsers.map((user, i) => (
+                      <li key={i}>{user.username}({user.email})</li>
+                    ))}
+                  </ul>
+                  <WeeklyTimesheetNotes timesheet={timesheet} />
+                </div>
+
               )}
             </Col>
           </Row>
@@ -116,9 +123,11 @@ export default Relay.createContainer(TimesheetWeekView, {
     expanded: false
   },
   fragments: {
+
     timesheet: () => Relay.QL`
       fragment on WeeklyTimesheet {
         ${ChangeWeeklyTimesheetStatus.getFragment('timesheet')}
+        ${WeeklyTimesheetNotes.getFragment('timesheet')}
         id
         status
         weekNumber
