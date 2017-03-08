@@ -22,9 +22,10 @@ const StyledPullRight = styled(StyledText)`
 `
 
 export const TimesheetWeekView = ({
-                                    relay,
-                                    timesheet
-                                  }: Props) => {
+  relay,
+  me,
+  timesheet
+}: Props) => {
   const {expanded} = relay.variables;
 
   const headerPart = (
@@ -96,7 +97,7 @@ export const TimesheetWeekView = ({
                     <option value="REJECTED">rejected</option>
                     <option value="WAITING">waiting</option>
                   </FormControl>
-                  <WeeklyTimesheetNotes timesheet={timesheet} />
+                  <WeeklyTimesheetNotes me={me} timesheet={timesheet} />
                 </div>
               ) : (
                 <div>
@@ -123,7 +124,11 @@ export default Relay.createContainer(TimesheetWeekView, {
     expanded: false
   },
   fragments: {
-
+    me: (vars) => Relay.QL`
+      fragment on User {
+        ${WeeklyTimesheetNotes.getFragment('me', vars)}
+      }
+    `,
     timesheet: () => Relay.QL`
       fragment on WeeklyTimesheet {
         ${ChangeWeeklyTimesheetStatus.getFragment('timesheet')}

@@ -53,6 +53,7 @@ const StyledDD = styled.dd`
 
 export const Notes = ({
   relay,
+  me,
   timesheet
 }) => (
   <div>
@@ -70,10 +71,15 @@ export const Notes = ({
     ) : (
       <p>No notes found. Be first to add one.</p>
     )}
-    <NewNoteForm onSubmit={message => relay.commitUpdate(new AddNoteToWeeklyStatus({
-      message,
-      timesheet
-    }))} />
+    {me ? (
+      <NewNoteForm onSubmit={message => relay.commitUpdate(new AddNoteToWeeklyStatus({
+        message,
+        timesheet
+      }))} />
+    ) : (
+      <p>You must be logged to send note</p>
+    )}
+
   </div>
 )
 
@@ -82,6 +88,11 @@ export default Relay.createContainer(Notes, {
     last: 5
   },
   fragments: {
+    me: () => Relay.QL`
+      fragment on User {
+        id
+      }
+    `,
     timesheet: () => Relay.QL`
      fragment on WeeklyTimesheet {
       ${AddNoteToWeeklyStatus.getFragment('timesheet')}      

@@ -15,13 +15,14 @@ const MeQuery = {
   me: queries.me
 }
 
-const NodeQuery = {
-  node: queries.node
+const TimesheetPageQuery = {
+  node: queries.node,
+  me: queries.me
 }
 
 export default (
   <Route queries={MeQuery} component={App} path="/">
     <IndexRoute queries={ViewerQuery} component={DashboardPage}/>
-    <Route path="timesheet/:id" queries={NodeQuery} component={TimesheetPage}/>
+    <Route path="timesheet/:id" queries={TimesheetPageQuery} component={TimesheetPage}/>
   </Route>
 )

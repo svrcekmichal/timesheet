@@ -23,6 +23,7 @@ const formatMonthName = (name: string) => name[0] + name.slice(1).toLowerCase();
 
 type Props = {
   relay: Relay,
+  me: ?User,
   node: ?User
 }
 
@@ -85,7 +86,7 @@ export class TimesheetPage extends Component {
   }
 
   render() {
-    const {node: user, relay} = this.props;
+    const {node: user, me, relay} = this.props;
     return (
       <Grid>
         <Row>
@@ -111,7 +112,7 @@ export class TimesheetPage extends Component {
                     <h4>Showing timesheet for {formatMonthName(relay.variables.month)} {relay.variables.year}</h4>
                     <PanelGroup>
                       {user.timesheet.weeks.map(week => (
-                        <TimesheetWeekView key={week.id} timesheet={week}/>
+                        <TimesheetWeekView key={week.id} me={me} timesheet={week}/>
                       ))}
                     </PanelGroup>
                   </div>
@@ -137,7 +138,12 @@ export default Relay.createContainer(TimesheetPage, {
     year: today.getFullYear(),
     month: getMonthName(today.getMonth()).toUpperCase()
   },
-  fragments: { //TODO change weekTimeSheet to timeSheetWeek (not consistent), check timeSheet VS timesheet
+  fragments: {
+    me: (vars) => Relay.QL`
+      fragment on User {
+        ${TimesheetWeekView.getFragment('me', vars)}
+      }
+    `,
     node: () => Relay.QL`
       fragment on User {
         id
